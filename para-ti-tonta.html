@@ -1,0 +1,429 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para ti, tonta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,500;1,400&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      background: linear-gradient(150deg, #fef3f8 0%, #f4ecff 40%, #edf2ff 70%, #fff5f9 100%);
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #bgdeco {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .deco {
+      position: absolute;
+      border-radius: 50%;
+      opacity: .06;
+      filter: blur(1px);
+    }
+
+    #intro {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: block;
+      font-size: clamp(11px, 1.4vw, 13px);
+      font-weight: 400;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: #9060b8;
+      margin-bottom: 16px;
+    }
+
+    #intro h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 500;
+      font-size: clamp(34px, 8vw, 80px);
+      line-height: 1.12;
+      color: #3a2258;
+      margin-bottom: 36px;
+    }
+
+    #startBtn {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(11px, 1.2vw, 13px);
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #6830a0;
+      background: transparent;
+      border: 1.5px solid #c8a8e0;
+      padding: 12px 38px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .3s, border-color .3s, color .3s;
+    }
+
+    #startBtn:hover {
+      background: rgba(140, 80, 200, .08);
+      border-color: #9860c0;
+      color: #4a1880;
+    }
+
+    #startBtn:focus-visible {
+      outline: 2px solid #bfa0d8;
+      outline-offset: 4px;
+    }
+
+    #scene {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      padding: 12px;
+    }
+
+    #mainSvg {
+      width: min(86vw, calc(84vh - 60px));
+      max-width: 440px;
+      height: auto;
+      overflow: visible;
+      flex-shrink: 0;
+    }
+
+    #caption {
+      margin-top: 14px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(16px, 3.5vw, 26px);
+      color: #3a2258;
+      text-align: center;
+      opacity: 0;
+    }
+
+    .replay {
+      position: absolute;
+      bottom: 16px;
+      right: 18px;
+      z-index: 5;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #8050a8;
+      background: transparent;
+      border: 1px solid #d0b0e8;
+      padding: 7px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: background .25s, border-color .25s;
+    }
+
+    .replay:hover {
+      background: rgba(140, 80, 200, .06);
+      border-color: #b090d0;
+    }
+
+    @media(max-width:480px) {
+      #mainSvg {
+        width: 92vw;
+        max-width: none;
+      }
+
+      #caption {
+        font-size: clamp(14px, 4vw, 20px);
+        margin-top: 10px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <div id="bgdeco"></div>
+    <div id="intro">
+      <span class="eyebrow">una cosa antes de empezar el dia</span>
+      <h1>Para ti, tonta</h1>
+      <button id="startBtn" type="button">abrir</button>
+    </div>
+    <div id="scene">
+      <svg id="mainSvg" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="gPurple" cx="50%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#f0d4ff" />
+            <stop offset="40%" stop-color="#b060f0" />
+            <stop offset="100%" stop-color="#7020d0" />
+          </radialGradient>
+          <filter id="fGlow" x="-25%" y="-25%" width="150%" height="150%">
+            <feGaussianBlur stdDeviation="5" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g transform="translate(240,215)">
+          <path id="hGlow" d="" fill="none" stroke="rgba(130,40,240,.09)" stroke-width="28" opacity="0" />
+          <path id="hLeftS" d="" fill="none" stroke="#d03050" stroke-width="3" stroke-linecap="round"
+            stroke-linejoin="round" opacity="0" />
+          <path id="hRightS" d="" fill="none" stroke="#2860c8" stroke-width="3" stroke-linecap="round"
+            stroke-linejoin="round" opacity="0" />
+          <path id="hFill" d="" fill="url(#gPurple)" opacity="0" filter="url(#fGlow)" />
+          <!-- tulip border group — ON TOP of fill -->
+          <g id="tulipBorder"></g>
+        </g>
+      </svg>
+      <div id="caption">te quiero, tonta ❤️</div>
+    </div>
+    <button class="replay" id="replayBtn" type="button">ver de nuevo</button>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+      var ns = 'http://www.w3.org/2000/svg';
+
+      /* ── bg decorations ──────────────────────────────── */
+      var bgEl = document.getElementById('bgdeco');
+      ['#f0c8e8', '#dcc8f8', '#c8d8f8', '#f8d8e0', '#e0c0f0'].forEach(function (c) {
+        for (var j = 0; j < 3; j++) {
+          var d = document.createElement('div'); d.className = 'deco';
+          var sz = Math.random() * 80 + 30;
+          d.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;left:' +
+            Math.random() * 100 + '%;top:' + Math.random() * 100 + '%;background:' + c + ';';
+          bgEl.appendChild(d);
+          gsap.to(d, {
+            x: (Math.random() - .5) * 50, y: (Math.random() - .5) * 50,
+            duration: Math.random() * 10 + 6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: Math.random() * 5
+          });
+        }
+      });
+
+      /* ── heart math (local coords centered at 0,0) ──── */
+      var SC = 10;
+      function hp(t) {
+        var x = 16 * Math.pow(Math.sin(t), 3) * SC;
+        var y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * SC;
+        return [x, y];
+      }
+      var N = 300;
+
+      /* full heart path */
+      var fullPts = [];
+      for (var i = 0; i <= N; i++) fullPts.push(hp((i / N) * Math.PI * 2));
+      var fullD = 'M ' + fullPts.map(function (p) { return p[0].toFixed(2) + ' ' + p[1].toFixed(2) }).join(' L ') + ' Z';
+
+      /* RIGHT half: t=0 → PI (top center → right lobe → bottom) */
+      var rPts = [];
+      for (var i = 0; i <= N / 2; i++) rPts.push(hp((i / N) * Math.PI * 2));
+      var rightD = 'M ' + rPts.map(function (p) { return p[0].toFixed(2) + ' ' + p[1].toFixed(2) }).join(' L ');
+
+      /* LEFT half: t=2PI → PI reversed (top center → left lobe → bottom) */
+      var lPts = [];
+      for (var i = N; i >= N / 2; i--) lPts.push(hp((i / N) * Math.PI * 2));
+      var leftD = 'M ' + lPts.map(function (p) { return p[0].toFixed(2) + ' ' + p[1].toFixed(2) }).join(' L ');
+
+      /* assign paths */
+      document.getElementById('hGlow').setAttribute('d', fullD);
+      document.getElementById('hFill').setAttribute('d', fullD);
+      document.getElementById('hLeftS').setAttribute('d', leftD);
+      document.getElementById('hRightS').setAttribute('d', rightD);
+
+      /* dash setup */
+      function mkDash(el) {
+        var len = el.getTotalLength();
+        el.style.strokeDasharray = len;
+        el.style.strokeDashoffset = len;
+        return len;
+      }
+      var elL = document.getElementById('hLeftS');
+      var elR = document.getElementById('hRightS');
+      var lenL = mkDash(elL);
+      var lenR = mkDash(elR);
+
+      /* ── create tulip HEADS along heart border ─────── */
+      var tulipBorder = document.getElementById('tulipBorder');
+      /* colors: left side pink/red, center purple, right side blue */
+      var flowerColors = ['#f472b6', '#ec4899', '#d946ef', '#c026d3', '#a855f7',
+        '#8b5cf6', '#818cf8', '#6366f1', '#60a5fa', '#3b82f6'];
+
+      /* sample ~36 points along heart, evenly by index */
+      var TULIP_COUNT = 36;
+      var step = Math.floor(N / TULIP_COUNT);
+      var tulipEls = [];
+
+      for (var i = 0; i < TULIP_COUNT; i++) {
+        var idx = (i * step) % N;
+        var pt = fullPts[idx];
+        var px = pt[0], py = pt[1];
+
+        /* angle: direction from center outward */
+        var ang = Math.atan2(py, px) * (180 / Math.PI) + 90;
+
+        /* color based on x position: pink on left, blue on right */
+        var t01 = (px + 160) / 320; /* 0=far left, 1=far right */
+        var ci = Math.floor(t01 * (flowerColors.length - 1));
+        ci = Math.max(0, Math.min(flowerColors.length - 1, ci));
+        var col = flowerColors[ci];
+
+        var g = document.createElementNS(ns, 'g');
+        g.setAttribute('transform', 'translate(' + px.toFixed(1) + ',' + py.toFixed(1) + ') rotate(' + ang.toFixed(1) + ') scale(0.55)');
+        g.style.opacity = '0';
+
+        /* tulip head only (no stem, no leaves) */
+        /* centre petal */
+        var p1 = document.createElementNS(ns, 'path');
+        p1.setAttribute('d', 'M0,-24 C-2,-18 -8,-14 -7,-4 Q-3,0 0,2 Q3,0 7,-4 C8,-14 2,-18 0,-24Z');
+        p1.setAttribute('fill', col);
+        g.appendChild(p1);
+
+        /* left petal overlap */
+        var p2 = document.createElementNS(ns, 'path');
+        p2.setAttribute('d', 'M0,-23 C-8,-17 -13,-10 -10,-4 Q-5,1 0,2Z');
+        p2.setAttribute('fill', col); p2.setAttribute('opacity', '.6');
+        g.appendChild(p2);
+
+        /* right petal overlap */
+        var p3 = document.createElementNS(ns, 'path');
+        p3.setAttribute('d', 'M0,-23 C8,-17 13,-10 10,-4 Q5,1 0,2Z');
+        p3.setAttribute('fill', col); p3.setAttribute('opacity', '.6');
+        g.appendChild(p3);
+
+        /* tiny sheen highlight */
+        var sh = document.createElementNS(ns, 'ellipse');
+        sh.setAttribute('cx', '-1.5'); sh.setAttribute('cy', '-15');
+        sh.setAttribute('rx', '1.5'); sh.setAttribute('ry', '5');
+        sh.setAttribute('fill', 'white'); sh.setAttribute('opacity', '.18');
+        g.appendChild(sh);
+
+        tulipBorder.appendChild(g);
+        tulipEls.push(g);
+      }
+
+      /* ── animation timeline ──────────────────────────── */
+      var hGlow = document.getElementById('hGlow');
+      var hFill = document.getElementById('hFill');
+
+      var tl = gsap.timeline({ paused: true });
+
+      /* 1: draw red (left) + blue (right) simultaneously from top */
+      tl.set([elL, elR], { opacity: 1 });
+      tl.to(elL, { strokeDashoffset: 0, duration: 1.8, ease: 'power1.inOut' });
+      tl.to(elR, { strokeDashoffset: 0, duration: 1.8, ease: 'power1.inOut' }, '<');
+      /* glow near end of stroke draw */
+      tl.to(hGlow, { opacity: 1, duration: .4 }, '<+=1.4');
+
+      /* 2: strokes fade → purple fill */
+      tl.to([elL, elR], { opacity: 0, duration: .55, ease: 'power2.in' });
+      tl.to(hFill, { opacity: .88, duration: .85, ease: 'power2.out' }, '-=.3');
+      tl.to(hGlow, { opacity: 0, duration: .5 }, '<+=.1');
+
+      /* 3: tulip heads bloom along the border in a wave */
+      tl.to(tulipEls, {
+        opacity: 1,
+        scale: 1,
+        duration: .4,
+        ease: 'back.out(2.5)',
+        stagger: { each: .03, from: 'start' }
+      }, '-=.15');
+
+      /* 4: caption */
+      tl.to('#caption', { opacity: 1, duration: .85, ease: 'power2.out' }, '-=.3');
+
+      /* 5: replay + float */
+      tl.add(function () {
+        var rb = document.getElementById('replayBtn');
+        rb.style.pointerEvents = 'auto';
+        gsap.to(rb, { opacity: 1, duration: .5 });
+        if (!idleTween) idleTween = gsap.to('#mainSvg', { y: -5, duration: 3.5, ease: 'sine.inOut', repeat: -1, yoyo: true });
+      });
+
+      var idleTween = null;
+
+      /* ── scene transition ────────────────────────────── */
+      var intro = document.getElementById('intro');
+      var scene = document.getElementById('scene');
+      var startBtn = document.getElementById('startBtn');
+      var replayBtn = document.getElementById('replayBtn');
+
+      function play() {
+        startBtn.disabled = true;
+        gsap.timeline()
+          .to(intro, { opacity: 0, y: -14, duration: .5, ease: 'power1.inOut' })
+          .set(intro, { display: 'none' })
+          .set(scene, { pointerEvents: 'auto' })
+          .to(scene, { opacity: 1, duration: .4 }, '<+=.05')
+          .add(function () { tl.play(); });
+      }
+
+      function reset() {
+        if (idleTween) { idleTween.kill(); idleTween = null; }
+        gsap.set('#mainSvg', { y: 0 });
+        tl.pause(0);
+        gsap.set([elL, elR], { opacity: 0, strokeDashoffset: lenL });
+        gsap.set([hFill, hGlow], { opacity: 0 });
+        tulipEls.forEach(function (el) { gsap.set(el, { opacity: 0, scale: 0 }); });
+        gsap.set('#caption', { opacity: 0 });
+        var rb = document.getElementById('replayBtn');
+        rb.style.pointerEvents = 'none'; gsap.set(rb, { opacity: 0 });
+        tl.restart();
+      }
+
+      startBtn.addEventListener('click', play);
+      replayBtn.addEventListener('click', reset);
+
+      /* intro entrance */
+      gsap.from('.eyebrow', { opacity: 0, y: 6, duration: .8, ease: 'power1.out', delay: .2 });
+      gsap.from('#intro h1', { opacity: 0, y: 14, duration: .9, ease: 'power2.out', delay: .35 });
+      gsap.from('#startBtn', { opacity: 0, y: 10, duration: .7, ease: 'power2.out', delay: .68 });
+    })();
+  </script>
+</body>
+
+</html>
